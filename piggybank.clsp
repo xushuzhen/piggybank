@@ -1,0 +1,64 @@
+; （mod相当于面向对象语言的class？）
+(mod
+    ; 传入参数（相当于init？）
+    (
+        TARGET_AMOUNT
+        CASH_OUT_PUZZLE_HASH
+        my_amount
+        new_amount
+        my_puzzlehash
+        ; INNER_PUZZLE
+        ; inner_solution
+    )
+    ; 引入条件码库文件
+    (include condition_codes.clib)
+
+    ; 这两个常量改为传入参数
+    ; ; defconstant定义常量
+    ; ; 最小存钱金额（单位好像不是奇亚币）
+    ; (defconstant TARGET_AMOUNT 1000000)
+    ; ; 接收地址
+    ; (defconstant CASH_OUT_PUZZLE_HASH 0x239b5f084ee91e26262713b20226e8286fa3e15914700bf8e647bf2cb0da3758)
+
+    ; 内联函数（相当于class里的private函数？）
+    (defun-inline cash_out (CASH_OUT_PUZZLE_HASH my_amount new_amount my_puzzlehash)
+        (list
+            ; 额外的验证条件，可以在操作货币的时候加入的条件
+            ; INNER_PUZZLE额外加入的条件程序的hash值，inner_solution参数
+            ; (c (a INNER_PUZZLE inner_solution))
+            ; 创建货币：把new_amount取到CASH_OUT_PUZZLE_HASH
+            (list CREATE_COIN CASH_OUT_PUZZLE_HASH new_amount)
+            ; 创建货币：我的my_puzzlehash归零
+            (list CREATE_COIN my_puzzlehash 0)
+
+            ; 验证远程amount，对比远程的amount和当前my_amount是否一致
+            (list ASSERT_MY_AMOUNT my_amount)
+            ; 验证远程puzzlehash，对比远程的puzzlehash和当前my_puzzlehash是否一致
+            (list ASSERT_MY_PUZZLEHASH my_puzzlehash)
+            ; 创建货币声明，对货币操作绑定，比如自己账户里有100，存到存钱罐100，账户余额0这些信息的绑定
+            (list CREATE_COIN_ANNOUNCEMENT new_amount)
+        )
+    )
+    (defun-inline recreate_self (my_amount new_amount my_puzzlehash)
+        (list
+            (list CREATE_COIN my_puzzlehash new_amount)
+            (list ASSERT_MY_AMOUNT my_amount)
+            (list ASSERT_MY_PUZZLEHASH my_puzzlehash)
+            (list CREATE_COIN_ANNOUNCEMENT new_amount)
+        )
+    )
+
+    ; （main函数？）
+    ; if条件符号在最前面，if里两个括号，第一个是if内容，第二个是else内容
+    (if (> new_amount my_amount)
+        (if (> new_amount TARGET_AMOUNT)
+            ; 取出所有xch
+            (cash_out CASH_OUT_PUZZLE_HASH my_amount new_amount my_puzzlehash)
+            ; 创建新的coin
+            (recreate_self my_amount new_amount my_puzzlehash)
+        )
+        ; x（相当于return 0或exit()？）
+        (x)
+    )
+
+)
