@@ -1,0 +1,14 @@
+(mod (arg_one)
+    
+    ; 函数，算阶乘
+    (defun factorial (input)
+    (if (= input 1) 
+        1 
+        (* (factorial (- input 1)) input))
+    )
+
+  ; 主函数
+  (factorial arg_one)
+  ; (defconstant test_args 6)
+  ; (factorial test_args)
+)
