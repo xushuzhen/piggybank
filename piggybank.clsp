@@ -1,6 +1,5 @@
-; （mod相当于面向对象语言的class？）
 (mod
-    ; 传入参数（相当于init？）
+    ; 传入参数
     (
         TARGET_AMOUNT
         CASH_OUT_PUZZLE_HASH
@@ -20,7 +19,7 @@
     ; ; 接收地址
     ; (defconstant CASH_OUT_PUZZLE_HASH 0x239b5f084ee91e26262713b20226e8286fa3e15914700bf8e647bf2cb0da3758)
 
-    ; 内联函数（相当于class里的private函数？）
+    ; 内联函数
     (defun-inline cash_out (CASH_OUT_PUZZLE_HASH my_amount new_amount my_puzzlehash)
         (list
             ; 额外的验证条件，可以在操作货币的时候加入的条件
@@ -48,7 +47,7 @@
         )
     )
 
-    ; （main函数？）
+    ; 主函数
     ; if条件符号在最前面，if里两个括号，第一个是if内容，第二个是else内容
     (if (> new_amount my_amount)
         (if (> new_amount TARGET_AMOUNT)

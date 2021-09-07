@@ -91,3 +91,44 @@ brun '(a (q 2 2 (c 2 (c 5 ()))) (c (q 2 (i (= 5 (q . 1)) (q 1 . 1) (q 18 (a 2 (c
    11：节点7的左叶子节点"for"
 
    15：节点7的右叶子节点"test"
+
+## run 高级语言
+
+1. 函数、宏和常量
+   
+   ```
+    (mod (arg_one arg_two)
+        (defconstant const_name value)
+        (defun function_name (parameter_one parameter_two) *function_code*)
+        (defun another_function (param_one param_two param_three) *function_code*)
+        (defun-inline utility_function (param_one param_two) *function_code*)
+        (defmacro macro_name (param_one param_two) *macro_code*)
+
+        (main *program*)
+    )
+   ```
+
+   defconstant：常量
+
+   defun：函数
+
+   defun-inline：内联函数
+
+   defmacro：宏
+
+2. 需要注意的点
+   
+   函数可以在代码中引用自己，但宏和内联函数不能
+
+   函数和宏都可以引用其他函数、宏和常量
+
+   Macros that refer to their parameters must be quasiquoted with the parameters unquoted
+
+   （猜测意思：使用宏的时候，参数必须标记为unquoted）
+
+   内联函数通常更效率（更快？），除非
+
+   ```
+   (defun-inline foo (X) (+ X X)) (foo (* 200 300))
+   ```
+   这样会在加法的两个参数上，重复运行两次乘法
