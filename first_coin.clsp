@@ -1,0 +1,8 @@
+(mod
+    (
+        my_puzzlehash
+        total_amount
+    )
+    (defconstant CREATE_COIN 51)
+    (list CREATE_COIN my_puzzlehash total_amount)
+)
